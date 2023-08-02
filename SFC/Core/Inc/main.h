@@ -58,14 +58,14 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define Temp_Sensor_Pin GPIO_PIN_1
-#define Temp_Sensor_GPIO_Port GPIOA
-#define D1_Pin GPIO_PIN_2
+#define D1_Pin GPIO_PIN_1
 #define D1_GPIO_Port GPIOA
-#define D2_Pin GPIO_PIN_3
+#define D2_Pin GPIO_PIN_2
 #define D2_GPIO_Port GPIOA
-#define D3_Pin GPIO_PIN_4
+#define D3_Pin GPIO_PIN_3
 #define D3_GPIO_Port GPIOA
+#define D4_Pin GPIO_PIN_4
+#define D4_GPIO_Port GPIOA
 #define A_Pin GPIO_PIN_5
 #define A_GPIO_Port GPIOA
 #define B_Pin GPIO_PIN_6
@@ -96,6 +96,8 @@ void Error_Handler(void);
 #define K3_GPIO_Port GPIOB
 #define K4_Pin GPIO_PIN_6
 #define K4_GPIO_Port GPIOB
+#define Temp_Sensor_Pin GPIO_PIN_7
+#define Temp_Sensor_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
