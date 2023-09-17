@@ -54,6 +54,9 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+typedef enum{
+	d1,	d2, d3, d4
+}Digit_Number;
 void Set_7Seg(Digit_Number dn, uint8_t Number){
 	HAL_GPIO_WritePin(D1_GPIO_Port, D1_Pin, 0);
 	HAL_GPIO_WritePin(D2_GPIO_Port, D2_Pin, 0);
@@ -229,7 +232,19 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_GPIO_WritePin(OE1_GPIO_Port, OE1_Pin, 0);
+  HAL_GPIO_WritePin(OE_Seg_Common_MCU_GPIO_Port, OE_Seg_Common_MCU_Pin, 0);
+  HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, 1);
+  HAL_GPIO_WritePin(D1_GPIO_Port, D1_Pin, 1);
+  HAL_GPIO_WritePin(D2_GPIO_Port, D2_Pin, 1);
+  HAL_GPIO_WritePin(D3_GPIO_Port, D3_Pin, 1);
+  HAL_GPIO_WritePin(D4_GPIO_Port, D4_Pin, 1);
+  HAL_GPIO_WritePin(Motor_GPIO_Port, Motor_Pin, 0);
+  HAL_GPIO_WritePin(Heater_1_GPIO_Port, Heater_1_Pin, 0);
+  HAL_GPIO_WritePin(Heater_2_GPIO_Port, Heater_2_Pin, 0);
+  HAL_GPIO_WritePin(FAN2_GPIO_Port, FAN2_Pin, 0);
+  HAL_GPIO_WritePin(FAN_GPIO_Port, FAN_Pin, 0);
+  uint8_t x=0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -239,6 +254,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+//	  Set_7Seg(d3, x);
+//
+//	  HAL_Delay(1000);
+//	  x++;
+//	  if(x==10)
+//		  x=0;
   }
   /* USER CODE END 3 */
 }
@@ -288,55 +309,69 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, Relay_MCU_Pin|Motor_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(E_GPIO_Port, E_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, Data_MCU_Bjt_Pin|LED1_Pin|LED2_Pin|LED3_Pin
-                          |FAN_Pin|Heater_1_Pin|Defrost_Pin|Heater_2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, D_Pin|DP_Pin|OE1_Pin|A_Pin
+                          |F_Pin|B_Pin|G_Pin|LED2_Pin
+                          |LED3_Pin|OE_Seg_Common_MCU_Pin|Heater_1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, A_Pin|B_Pin|C_Pin|D1_Pin
-                          |D2_Pin|D3_Pin|D4_Pin|D_Pin
-                          |E_Pin|F_Pin|G_Pin|dot_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, C_Pin|D1_Pin|D2_Pin|D3_Pin
+                          |D4_Pin|Data_MCU_PIN_Pin|Data_MCU_Bjt_Pin|LED1_Pin
+                          |Motor_Pin|Heater_2_Pin|FAN2_Pin|FAN_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : Relay_MCU_Pin Motor_Pin */
-  GPIO_InitStruct.Pin = Relay_MCU_Pin|Motor_Pin;
+  /*Configure GPIO pins : Right_Pin Down_Pin Center_Pin */
+  GPIO_InitStruct.Pin = Right_Pin|Down_Pin|Center_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Up_Pin */
+  GPIO_InitStruct.Pin = Up_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Up_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : E_Pin */
+  GPIO_InitStruct.Pin = E_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(E_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Data_MCU_Bjt_Pin LED1_Pin LED2_Pin LED3_Pin
-                           FAN_Pin Heater_1_Pin Defrost_Pin Heater_2_Pin */
-  GPIO_InitStruct.Pin = Data_MCU_Bjt_Pin|LED1_Pin|LED2_Pin|LED3_Pin
-                          |FAN_Pin|Heater_1_Pin|Defrost_Pin|Heater_2_Pin;
+  /*Configure GPIO pins : D_Pin DP_Pin OE1_Pin A_Pin
+                           F_Pin B_Pin G_Pin LED2_Pin
+                           LED3_Pin OE_Seg_Common_MCU_Pin Heater_1_Pin */
+  GPIO_InitStruct.Pin = D_Pin|DP_Pin|OE1_Pin|A_Pin
+                          |F_Pin|B_Pin|G_Pin|LED2_Pin
+                          |LED3_Pin|OE_Seg_Common_MCU_Pin|Heater_1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : A_Pin B_Pin C_Pin D1_Pin
-                           D2_Pin D3_Pin D4_Pin D_Pin
-                           E_Pin F_Pin G_Pin dot_Pin */
-  GPIO_InitStruct.Pin = A_Pin|B_Pin|C_Pin|D1_Pin
-                          |D2_Pin|D3_Pin|D4_Pin|D_Pin
-                          |E_Pin|F_Pin|G_Pin|dot_Pin;
+  /*Configure GPIO pins : C_Pin D1_Pin D2_Pin D3_Pin
+                           D4_Pin Data_MCU_PIN_Pin Data_MCU_Bjt_Pin LED1_Pin
+                           Motor_Pin Heater_2_Pin FAN2_Pin FAN_Pin */
+  GPIO_InitStruct.Pin = C_Pin|D1_Pin|D2_Pin|D3_Pin
+                          |D4_Pin|Data_MCU_PIN_Pin|Data_MCU_Bjt_Pin|LED1_Pin
+                          |Motor_Pin|Heater_2_Pin|FAN2_Pin|FAN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Up_Pin Right_Pin Down_Pin Center_Pin
-                           Left_Pin */
-  GPIO_InitStruct.Pin = Up_Pin|Right_Pin|Down_Pin|Center_Pin
-                          |Left_Pin;
+  /*Configure GPIO pin : Defrost_Key_Pin */
+  GPIO_InitStruct.Pin = Defrost_Key_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(Defrost_Key_GPIO_Port, &GPIO_InitStruct);
 
 }
 
